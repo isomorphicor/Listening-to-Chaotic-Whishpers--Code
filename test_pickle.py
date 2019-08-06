@@ -16,8 +16,13 @@ def test_pickle(path):
             b = unpickler.load()
     print(b)
 
-
+#%%
 if __name__ == '__main__':
-    article = '/home/zeninvest/firm_csv_folder/pickle/3M.csv.pkl'
+    article = '/mnt/cbrai/nlp/lcw/firm_csv_folder_old/pickle/3M.csv.pkl'
     test_pickle(article)
 
+#%%
+article = '/mnt/cbrai/nlp/lcw/stock_values/pickle_stock_value/3M .csv.pkl'
+pkl_file = open(article, 'rb')
+data = pickle.load(pkl_file)
+pkl_file.close()

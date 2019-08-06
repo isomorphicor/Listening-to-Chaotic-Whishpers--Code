@@ -1,0 +1,6 @@
+.idea/
+data/
+tmp/
+tmp_bert/
+*.pyc
+*.log
