@@ -12,19 +12,19 @@ from utils.preprocess import not_ch_or_stop
 
 d2v = Doc2Vec.load('/mnt/data/nlp_data/news/'+'d2v_200/'+'d2v.model')
 model = load_model('/mnt/cbrai/nlp/lcw/tmp/tr9/'+'weights-improvement-0001-0.4525.hdf5')
-b, w, n, d = (1, 10, 10, 200)
-x = np.zeros((b, w, n, d), dtype='float32')
-ma, mm, md = snf(x.shape, model)
+shape = (1, 10, 10, 200)
+ma, mm, md = snf(shape, model)
 
 
-def snf_score(news):
+def snf_score(news=[]):
     """
     :param news: ['raw_news_text-1',...,'raw_news_text-t']
     :return snf_score:{'articles':[[],[],...,[]],'days':[]}
     """
     ss = {}
+    x = np.zeros(shape, dtype='float32')
     for i in range(len(news)):
-        x[0, i//w, i % w, :] = d2v.infer_vector(clean_sent(
+        x[0, i//shape[2], i % shape[2], :] = d2v.infer_vector(clean_sent(
             segment(news[i], mode='seg'), filter_func=not_ch_or_stop))
     a1, a2 = predict(x, ma, mm, md)
     ss['articles'] = np.squeeze(a1).tolist()
