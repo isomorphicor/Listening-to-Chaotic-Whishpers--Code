@@ -26,7 +26,7 @@ if __name__ == "__main__":
     sentences = LabeledLineSentence(data_dir + 'news_stocks/')
 
     # 设置min_count忽略出现1次以下的词，防止有词不在词汇表中
-    model = Doc2Vec(vector_size=500, window=10, min_count=5, epochs=40, workers=8)
+    model = Doc2Vec(vector_size=300, window=10, min_count=5, epochs=40, workers=8)
     # model = Doc2Vec(vector_size=200, window=10, min_count=1, epochs=40, workers=8)
     print('start train ...', flush=True)
     # 构建文本词汇表
@@ -36,7 +36,7 @@ if __name__ == "__main__":
     model.train(sentences, total_examples=model.corpus_count, epochs=model.epochs)
     print('docd2vec train finished', flush=True)
     # doc2vec模型保存
-    model.save(os.path.join(data_dir + 'd2v_500/', 'd2v.model'))
+    model.save(os.path.join(data_dir + 'd2v_300/', 'd2v.model'))
     print('doc2vec saved', flush=True)
 
     # model.infer_vector(['中国', '人民'])

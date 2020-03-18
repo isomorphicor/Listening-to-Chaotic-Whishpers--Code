@@ -3,17 +3,18 @@
 from keras.models import load_model
 import numpy as np
 from gensim.models.doc2vec import Doc2Vec
-from news_snf import snf
-from news_snf import predict
-from utils.preprocess import segment
-from utils.preprocess import clean_sent
-from utils.preprocess import not_ch_or_stop
-
+from .news_snf import snf
+from .news_snf import predict
+from .utils.preprocess import segment
+from .utils.preprocess import clean_sent
+from .utils.preprocess import not_ch_or_stop
+import tensorflow as tf
 
 d2v = Doc2Vec.load('/mnt/data/nlp_data/news/'+'d2v_200/'+'d2v.model')
 model = load_model('/mnt/cbrai/nlp/lcw/tmp/tr9/'+'weights-improvement-0001-0.4525.hdf5')
 shape = (1, 10, 10, 200)
 ma, mm, md = snf(shape, model)
+graph = tf.get_default_graph()  # 作为服务时先载入模型 等待请求调用指定的计算图
 
 
 def snf_score(news=[]):
@@ -24,9 +25,11 @@ def snf_score(news=[]):
     ss = {}
     x = np.zeros(shape, dtype='float32')
     for i in range(len(news)):
+        d2v.random.seed(42)
         x[0, i//shape[2], i % shape[2], :] = d2v.infer_vector(clean_sent(
-            segment(news[i], mode='seg'), filter_func=not_ch_or_stop))
-    a1, a2 = predict(x, ma, mm, md)
+            segment(news[i], mode='seg'), filter_func=not_ch_or_stop), steps=20, alpha=0.025)
+    with graph.as_default():
+        a1, a2 = predict(x, ma, mm, md)
     ss['articles'] = np.squeeze(a1).tolist()
     ss['days'] = np.squeeze(a2).tolist()
     return ss

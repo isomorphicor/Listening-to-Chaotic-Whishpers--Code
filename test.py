@@ -53,3 +53,10 @@ article = '/mnt/cbrai/nlp/lcw/stock_values/pickle_stock_value/3M .csv.pkl'
 pkl_file = open(article, 'rb')
 data = pickle.load(pkl_file)
 pkl_file.close()
+
+#%%
+from .utils.preprocess import segment
+ss = segment('中文世界nlp自然语言处理技术', 'seg')
+
+
+
